@@ -8,7 +8,7 @@ Object.defineProperty(exports, "__esModule", {
 // > let primes = eratosthenes();
 // > primes.next()
 // { value: 2, done: false }
-const eratosthenes = function* () {
+const primes = function* () {
     // Start with the first prime.
     const primes = [2];
     yield 2;
@@ -25,4 +25,4 @@ const eratosthenes = function* () {
     }
 };
 
-exports.eratosthenes = eratosthenes;
+exports.primes = primes;
