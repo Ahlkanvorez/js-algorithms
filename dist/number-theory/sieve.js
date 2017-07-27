@@ -9,12 +9,9 @@ Object.defineProperty(exports, "__esModule", {
 // > primes.next()
 // { value: 2, done: false }
 const primes = function* () {
-    // Start with the first prime.
-    const primes = [2];
-    yield 2;
-
+    const primes = [];
     // Check every successive number for primailty.
-    for (let i = primes[primes.length - 1];; ++i) {
+    for (let i = 2;; ++i) {
         // Since every prime less than i has already been found,
         // i is prime if and only if none of the primes found thusfar divide it.
         if (primes.every(p => i % p !== 0)) {
