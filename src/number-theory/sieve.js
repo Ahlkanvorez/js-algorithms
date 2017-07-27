@@ -1,4 +1,8 @@
 // Returns a generator that sequentially generates every prime.
+// Usage:
+// > let primes = eratosthenes();
+// > primes.next()
+// { value: 2, done: false }
 const eratosthenes = function *() {
     // Start with the first prime.
     const primes = [ 2 ];
