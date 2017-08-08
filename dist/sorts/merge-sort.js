@@ -13,9 +13,13 @@ const funnel = (lessThan = (a, b) => a < b) => {
         const nonEmptyLists = new Set(lists);
 
         // Associate each list with its iterator.
-        lists = lists.map(list => ({ list, iterator: list[Symbol.iterator]() }));
+        lists = lists.map(list => ({
+            list,
+            iterator: list[Symbol.iterator]()
+        }));
 
-        // Use a WeakMap because references needn't be maintained after this computation is completed.
+        // Use a WeakMap because references needn't be maintained after this
+        // computation is completed.
         const cache = new WeakMap();
 
         const toFirstValues = ({ list, iterator }) => cache.has(list) ? { list, result: cache.get(list) } : { list, result: cache.set(list, iterator.next()).get(list) };
@@ -26,14 +30,16 @@ const funnel = (lessThan = (a, b) => a < b) => {
             return !done && value !== undefined;
         };
 
-        // Continue yielding values until there are no more iterators with values remaining.
+        // Continue yielding values until there are no more iterators with
+        // values remaining.
         while (nonEmptyLists.size > 0) {
             lists = lists.filter(({ list, iterator }) => nonEmptyLists.has(list));
             const vals = lists.map(toFirstValues).filter(notDone);
             if (vals && vals.length > 0) {
                 const min = vals.reduce(lesser);
 
-                // Un-cache the least value, so that it is not considered in the next round.
+                // Un-cache the least value, so that it is not considered in the
+                // next round.
                 cache.delete(min.list);
                 yield min.result.value;
             }

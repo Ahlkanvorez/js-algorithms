@@ -8,9 +8,13 @@ const funnel = (lessThan = (a, b) => a < b) => {
         const nonEmptyLists = new Set(lists);
 
         // Associate each list with its iterator.
-        lists = lists.map(list => ({ list, iterator: list[Symbol.iterator]() }));
+        lists = lists.map(list => ({
+            list,
+            iterator: list[Symbol.iterator]()
+        }));
 
-        // Use a WeakMap because references needn't be maintained after this computation is completed.
+        // Use a WeakMap because references needn't be maintained after this
+        // computation is completed.
         const cache = new WeakMap();
 
         const toFirstValues = ({ list, iterator }) => (cache.has(list)
@@ -23,14 +27,17 @@ const funnel = (lessThan = (a, b) => a < b) => {
             return !done && value !== undefined;
         };
 
-        // Continue yielding values until there are no more iterators with values remaining.
+        // Continue yielding values until there are no more iterators with
+        // values remaining.
         while (nonEmptyLists.size > 0) {
-            lists = lists.filter(({ list, iterator }) => nonEmptyLists.has(list));
+            lists = lists
+                .filter(({ list, iterator }) => nonEmptyLists.has(list));
             const vals = lists.map(toFirstValues).filter(notDone);
             if (vals && vals.length > 0) {
                 const min = vals.reduce(lesser);
 
-                // Un-cache the least value, so that it is not considered in the next round.
+                // Un-cache the least value, so that it is not considered in the
+                // next round.
                 cache.delete(min.list);
                 yield min.result.value;
             }
@@ -47,14 +54,17 @@ const partition = (n = 2) => list => {
     return parts;
 };
 
-const merge = (lessThan = (a, b) => a < b) => lists => [ ...funnel(lessThan)(lists) ];
+const merge = (lessThan = (a, b) => a < b) =>
+    lists => [ ...funnel(lessThan)(lists) ];
 
 function sort (n = 2) {
     const split = partition(n);
     return function sortWithCmp (lessThan = (a, b) => a < b) {
         const mergeParts = merge(lessThan);
         return function sort (data) {
-            return (data.length === 1) ? data : mergeParts(split(data).map(sort));
+            return (data.length === 1)
+                    ? data
+                    : mergeParts(split(data).map(sort));
         };
     }
 }
